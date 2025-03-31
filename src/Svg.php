@@ -8,6 +8,8 @@ class Svg
 {
     protected string $svg;
 
+    protected array $node_paths = [];
+
     public function __construct(string $svg)
     {
         $this->svg = $svg;
@@ -61,6 +63,18 @@ class Svg
     public function saveAsWebp(string $path): bool|int
     {
         return $this->rasterizer()->to(Format::WEBP)->save($path);
+    }
+
+    public function setNodePath(string $path)
+    {
+        $this->node_paths[] = $path;
+
+        return $this;
+    }
+
+    public function getNodePaths()
+    {
+        return $this->node_paths;
     }
 
     protected function rasterizer(): SharpSvgRasterizer

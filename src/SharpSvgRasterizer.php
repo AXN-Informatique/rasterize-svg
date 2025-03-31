@@ -11,12 +11,19 @@ class SharpSvgRasterizer
 {
     protected Svg $svg;
 
+    protected array $node_paths = [
+        '/usr/local/bin',
+        '/opt/homebrew/bin',
+    ];
+
     protected TemporaryDirectory $temporarySvgDirectory;
 
     protected Format $format = Format::PNG;
 
     public function __construct(Svg $svg)
     {
+        $this->node_paths = array_merge($this->node_paths, $svg->getNodePaths());
+
         return $this->svg = $svg;
     }
 
@@ -35,10 +42,7 @@ class SharpSvgRasterizer
     public function rasterize(): string
     {
         $command = [
-            (new ExecutableFinder)->find('node', 'node', [
-                '/usr/local/bin',
-                '/opt/homebrew/bin',
-            ]),
+            (new ExecutableFinder)->find('node', 'node', $this->node_paths),
             'sharp.js',
             $this->createTemporarySvgFile(),
             $this->format->value,
